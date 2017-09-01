@@ -5,6 +5,10 @@ import os
 import getopt
 import sys
 
+# 0 Error
+# 1 Download ok
+# 2 Already updated
+
 
 #Set user and pass for VIIRS server
 USERNAME = "benjartv"
@@ -94,6 +98,7 @@ if __name__ == "__main__":
 				urllib.urlretrieve('ftp://'+USERNAME+':'+PASSWORD+'@nrt3.modaps.eosdis.nasa.gov/FIRMS/viirs/South_America/'+filename, filenamePath)
 			except:
 				print "Error downloading the viirs file"
+				print "0"
 				sys.exit(1)
 			# #Remove data from other countries than Chile
 			# file = open(filenamePath)
@@ -123,8 +128,10 @@ if __name__ == "__main__":
 			logfile.close()
 
 			print "VIIRS file downloaded completely."
+			print "1"
 		else:
 			print "VIIRS file is already updated."
+			print "2"
 
 
 

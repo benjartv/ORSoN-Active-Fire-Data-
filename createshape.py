@@ -178,16 +178,25 @@ if __name__ == "__main__":
 
 				if layerFeaturesCount == 0:
 					print "No fire detected"
+					print []
 				else:
+					nameFile = "VIIRS_"+dayfolder+"_"+timeupdate+"_CLIP"
 					clipLayerPath = clipLayerPath.strip(";")
-					finalClipPath = os.path.join(dayfolderPath, "VIIRS_"+dayfolder+"_"+timeupdate+"_CLIP.shp")
+					finalClipPath = os.path.join(dayfolderPath, nameFile+".shp")
 					processing.runalg("qgis:mergevectorlayers", clipLayerPath, finalClipPath)
 					print "VIIRS shape created successfully"
+					outList = []
+					listdir = os.listdir(dayfolderPath)
+					for file in listdir:
+						if nameFile in file:
+							outList.append(os.path.join(dayfolderPath, file))
+					print outList
+					#print finalClipPath.strip(".shp")+".*"
 
 				
 				shutil.rmtree(tempPath)
 				elapsed = timeit.default_timer() - start_time
-				print "time: ", elapsed
+				#print "time: ", elapsed
 
 
 

@@ -22,12 +22,13 @@ def usage():
     print "\n Create ShapeFile from VIIRS data"
     print " -d: directory for save ShapeFile"
     print " -m: directory of masks shapes folder (Chilean Zones)"
+    print " -D: Distance for polygon from viirs point"
 
 def initConfig():
     ligand = ""
     protein = ""
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'd:m:h', ['directory=', 'maskdir=','help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'd:m:D:h', ['directory=', 'maskdir=', 'Distance=','help'])
         if not opts:
           print ' Missing parameters'
           usage()
@@ -44,17 +45,20 @@ def initConfig():
 		    directory = arg
 		elif opt in ('-m', '--maskdir'):
 		    maskdirectory = arg
+		elif opt in ('-D', '--Distance'):
+			distance = arg
 		else:
 		    usage()
 		    sys.exit(2)
-    return [directory, maskdirectory]
+    return [directory, maskdirectory, distance]
 
 
 if __name__ == "__main__":
 
-	directories = initConfig()
-	directory = directories[0]
-	maskDirectory = directories[1]
+	arguments = initConfig()
+	directory = arguments[0]
+	maskDirectory = arguments[1]
+	distance = float(arguments[2])
 
 	app = QgsApplication([],False)
 
@@ -184,14 +188,22 @@ if __name__ == "__main__":
 					clipLayerPath = clipLayerPath.strip(";")
 					finalClipPath = os.path.join(dayfolderPath, nameFile+".shp")
 					processing.runalg("qgis:mergevectorlayers", clipLayerPath, finalClipPath)
-					print "VIIRS shape created successfully"
+
+					polygonLayer = nameFile + "_Polygon"
+					polygonPath = os.path.join(dayfolderPath, polygonLayer)
+					try:
+						processing.runalg("qgis:fixeddistancebuffer", finalClipPath, distance, 1000, False, polygonPath+".shp")
+						print "VIIRS shape created successfully"
+					except Exception:
+						print "Polygon function error"
+						sys.exit(2)
+					
 					outList = []
 					listdir = os.listdir(dayfolderPath)
 					for file in listdir:
-						if nameFile in file:
+						if polygonLayer in file:
 							outList.append(os.path.join(dayfolderPath, file))
 					print outList
-					#print finalClipPath.strip(".shp")+".*"
 
 				
 				shutil.rmtree(tempPath)

@@ -201,7 +201,7 @@ if __name__ == "__main__":
 					outList = []
 					listdir = os.listdir(dayfolderPath)
 					for file in listdir:
-						if polygonLayer in file:
+						if polygonLayer+".shp" in file:
 							outList.append(os.path.join(dayfolderPath, file))
 					print outList
 

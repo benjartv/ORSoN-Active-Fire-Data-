@@ -12,7 +12,7 @@ import sys
 
 #Set user and pass for VIIRS server
 USERNAME = "benjartv"
-PASSWORD = "Ironmaiden1991"
+PASSWORD = "Citiaps1234"
 
 
 def usage():
